@@ -1,6 +1,5 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import appCss from '../styles.css?url'
-import { Header } from '../components/Header'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -20,11 +19,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="h-full flex flex-col">
-        <Header />
-        <main className="flex-1 overflow-auto">
-          {children}
-        </main>
+      <body className="h-full">
+        {children}
         <Scripts />
       </body>
     </html>

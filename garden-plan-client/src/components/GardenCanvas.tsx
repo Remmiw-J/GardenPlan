@@ -1,20 +1,24 @@
 import { useState } from 'react'
 import { GardenCell } from './GardenCell'
 import { ContextMenu } from './ContextMenu'
+import type { Cell } from '../types'
 
 export type Direction = 'top' | 'bottom' | 'left' | 'right'
-type Cell = { x: number; y: number; name?: string }
 type ContextMenuState = { key: string; x: number; y: number }
 
-const DIRECTION_OFFSETS: Record<Direction, Cell> = {
+const DIRECTION_OFFSETS: Record<Direction, { x: number; y: number }> = {
   top:    { x:  0, y: -1 },
   bottom: { x:  0, y:  1 },
   left:   { x: -1, y:  0 },
   right:  { x:  1, y:  0 },
 }
 
-export function GardenCanvas() {
-  const [cells, setCells] = useState<Cell[]>([{ x: 0, y: 0 }])
+interface GardenCanvasProps {
+  cells: Cell[]
+  onCellsChange: (cells: Cell[]) => void
+}
+
+export function GardenCanvas({ cells, onCellsChange }: GardenCanvasProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
   const [editingKey, setEditingKey] = useState<string | null>(null)
@@ -33,7 +37,7 @@ export function GardenCanvas() {
     const next = { x: fromX + dx, y: fromY + dy }
     const key = `${next.x},${next.y}`
     if (!cellMap.has(key)) {
-      setCells(prev => [...prev, next])
+      onCellsChange([...cells, next])
       setSelectedKey(key)
     }
   }
@@ -41,12 +45,12 @@ export function GardenCanvas() {
   function deleteCell(key: string) {
     if (cells.length <= 1) return
     const [x, y] = key.split(',').map(Number)
-    setCells(prev => prev.filter(c => !(c.x === x && c.y === y)))
+    onCellsChange(cells.filter(c => !(c.x === x && c.y === y)))
     if (selectedKey === key) setSelectedKey(null)
   }
 
   function renameCell(key: string, name: string) {
-    setCells(prev => prev.map(c =>
+    onCellsChange(cells.map(c =>
       `${c.x},${c.y}` === key ? { ...c, name: name || undefined } : c
     ))
     setEditingKey(null)
