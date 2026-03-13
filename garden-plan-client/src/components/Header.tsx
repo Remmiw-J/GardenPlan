@@ -14,7 +14,7 @@ export function Header({ plans, activePlanId, onSelectPlan, onNewPlan }: HeaderP
   return (
     <header
       className="relative flex items-center justify-between px-4 py-3 shadow-md shrink-0"
-      style={{ backgroundColor: '#196133' }}
+      style={{ backgroundColor: '#1d4ed8' }}
     >
       <button
         onClick={() => setOpen(o => !o)}
